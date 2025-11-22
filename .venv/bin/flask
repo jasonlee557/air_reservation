@@ -1,0 +1,9 @@
+#!/bin/sh
+'''exec' "/Users/liuxinqi/Library/Mobile Documents/com~apple~CloudDocs/Documents/学校/2025 Fall/DB/Project/air_reservation/.venv/bin/python3" "$0" "$@"
+' '''
+import sys
+from flask.cli import main
+if __name__ == '__main__':
+    if sys.argv[0].endswith('.exe'):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main())

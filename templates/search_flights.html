@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Search Results</h2>
+
+{% if flights and flights|length > 0 %}
+    <table border="1">
+        <tr>
+            <th>Airline</th>
+            <th>Flight #</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+        </tr>
+
+        {% for f in flights %}
+        <tr>
+            <td>{{ f.airline_name }}</td>
+            <td>{{ f.flight_num }}</td>
+            <td>{{ f.origin_airport_name }} ({{ f.origin_city }})</td>
+            <td>{{ f.dest_airport_name }} ({{ f.dest_city }})</td>
+            <td>{{ f.departure_time }}</td>
+            <td>{{ f.arrival_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>No flights found.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Flight Status</h2>
+
+{% if result and result|length > 0 %}
+    <table border="1">
+        <tr>
+            <th>Airline</th>
+            <th>Flight #</th>
+            <th>Status</th>
+        </tr>
+
+        {% for r in result %}
+        <tr>
+            <td>{{ r.airline_name }}</td>
+            <td>{{ r.flight_num }}</td>
+            <td>{{ r.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% else %}
+    <p>No flights found.</p>
+{% endif %}
+
+{% endblock %}

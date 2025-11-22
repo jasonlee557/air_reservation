@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Air Ticket Reservation System</h1>
+
+<h2>Search Upcoming Flights</h2>
+<!-- send origin, dest, date to search_flights -->
+<form method="GET" action="{{ url_for('search_flights.search_flights') }}">
+    <label>Origin (city or airport):</label><br>
+    <input type="text" name="origin"><br><br>
+
+    <label>Destination (city or airport):</label><br>
+    <input type="text" name="destination"><br><br>
+
+    <label>Date:</label><br>
+    <input type="date" name="date" required><br><br>
+
+    <button type="submit">Search Flights</button>
+</form>
+
+<hr>
+
+<h2>Check Flight Status</h2>
+<!-- send airline and flight number to flight_status -->
+<form method="GET" action="{{ url_for('flight_status.flight_status') }}">
+    <label>Airline:</label><br>
+    <input type="text" name="airline" required><br><br>
+
+    <label>Flight #:</label><br>
+    <input type="text" name="flight_num" required><br><br>
+
+    <button type="submit">Check Status</button>
+</form>
+
+{% endblock %}
