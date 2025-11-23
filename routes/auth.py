@@ -16,7 +16,8 @@ def init_bcrypt(setup_state):
 def register():
     # use post when sending sensitive info
     if request.method == "POST":
-        email = request.form.get("email", "").strip()
+        # Accept either "username(email)" (current form) or legacy "email"
+        email = request.form.get("username(email)", "").strip() or request.form.get("email", "").strip()
         name = request.form.get("name", "").strip()
         password = request.form.get("password", "").strip()
         confirm = request.form.get("confirm", "").strip()
@@ -71,15 +72,100 @@ def register():
         conn.close()
         flash("Registration successful. Please log in.")
         return redirect(url_for("auth.login"))
+    
+    # GET request: show registration form
     return render_template("register.html")
 
 
 
 
-@auth_bp.route("/login")
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    flash("Login coming soon.")
-    return redirect(url_for("customer.index"))
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+        
+        # validation
+        if email == "" or password == "":
+            flash("Please fill in all fields.")
+            return redirect(url_for("auth.login"))
+        
+        # connect to db
+        conn = get_connection()
+        cur = conn.cursor(dictionary=True)
+        
+        # fetch user
+        cur.execute("SELECT * FROM customer WHERE email = %s;", (email,))
+        user = cur.fetchone()
+        
+        if user is None:
+            # check if agent
+            cur.execute("SELECT * FROM booking_agent WHERE email = %s;", (email,))
+            user = cur.fetchone()
+            
+            if user is None:
+                # check if staff
+                cur.execute("SELECT * FROM airline_staff WHERE username = %s;", (email,))
+                user = cur.fetchone()
+                
+                if user is None or not bcrypt.check_password_hash(user["password"], password):
+                    flash("Invalid username or password.")
+                    cur.close()
+                    conn.close()
+                    return redirect(url_for("auth.login"))
+                else:
+                    # set session for staff
+                    session.clear()
+                    session["user_id"] = user["username"]
+                    session["user_name"] = user["name"]
+                    session["user_role"] = user.get("role") or "staff"
+                    
+                    cur.close()
+                    conn.close()
+                    
+                    flash("Login successful.")
+                    return redirect(url_for("staff.dashboard"))
+                
+            elif not bcrypt.check_password_hash(user["password"], password):
+                flash("Invalid username or password.")
+                cur.close()
+                conn.close()
+                return redirect(url_for("auth.login"))
+            
+            else:
+                # set session for agent
+                session.clear()
+                session["user_email"] = user["email"]  # email is PK
+                session["user_role"] = "agent"
+                
+                cur.close()
+                conn.close()
+                
+                flash("Login successful.")
+                return redirect(url_for("agent.dashboard"))
+            
+        elif not bcrypt.check_password_hash(user["password"], password):
+            flash("Invalid email or password.")
+            cur.close()
+            conn.close()
+            return redirect(url_for("auth.login"))
+        
+        else:
+            # set session for customer
+            session.clear()
+            session["user_email"] = user["email"]  # email is PK
+            session["user_name"] = user["name"]
+            session["user_role"] = "customer"
+            
+            cur.close()
+            conn.close()
+            
+            flash("Login successful.")
+            return redirect(url_for("customer.dashboard"))
+        
+    
+    # GET request: show login form
+    return render_template("login.html")
 
 
 @auth_bp.route("/logout")
