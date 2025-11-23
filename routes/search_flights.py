@@ -33,6 +33,8 @@ def search_flights():
             f.arrival_airport,
             f.departure_time,
             f.arrival_time,
+            f.airplane_id,
+            f.base_price,
             a1.airport_city AS origin_city,
             a1.airport_name AS origin_airport_name,
             a2.airport_city AS dest_city,
@@ -65,5 +67,8 @@ def search_flights():
     
     return render_template(
         "search_flights.html",
-        flights=flights
+        flights=flights,
+        origin=origin,
+        destination=destination,
+        date=date,
     )

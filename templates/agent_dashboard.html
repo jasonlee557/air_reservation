@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Flights Sold (as Booking Agent)</h2>
+<p>Logged in as: {{ session['user_email'] }}</p>
+
+<form method="get" action="{{ url_for('agent.dashboard') }}">
+    <fieldset>
+        <legend>Filters</legend>
+
+        <label>Purchase date from:</label>
+        <input type="date" name="date_from" value="{{ date_from }}">
+        <label>to:</label>
+        <input type="date" name="date_to" value="{{ date_to }}"><br><br>
+
+        <label>Origin (city or airport):</label>
+        <input type="text" name="origin" value="{{ origin }}">
+
+        <label>Destination (city or airport):</label>
+        <input type="text" name="dest" value="{{ dest }}"><br><br>
+
+        <button type="submit">Apply Filters</button>
+    </fieldset>
+</form>
+
+<hr>
+
+{% if flights and flights|length > 0 %}
+<table border="1">
+    <tr>
+        <th>Customer</th>
+        <th>Airline</th>
+        <th>Flight #</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Purchase Date</th>
+        <th>Price</th>
+        <th>Status</th>
+    </tr>
+    {% for f in flights %}
+    <tr>
+        <td>{{ f.customer_email }}</td>
+        <td>{{ f.airline_name }}</td>
+        <td>{{ f.flight_num }}</td>
+        <td>{{ f.departure_airport }} ({{ f.origin_city }})</td>
+        <td>{{ f.arrival_airport }} ({{ f.dest_city }})</td>
+        <td>{{ f.departure_time }}</td>
+        <td>{{ f.arrival_time }}</td>
+        <td>{{ f.purchase_date }}</td>
+        <td>{{ f.purchase_price }}</td>
+        <td>{{ f.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No flights found for this agent with the given filters.</p>
+{% endif %}
+
+{% endblock %}

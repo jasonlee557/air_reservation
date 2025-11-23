@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>My Profile</h2>
+
+<p>Email: <strong>{{ customer.email }}</strong></p>
+
+<form method="post" action="{{ url_for('customer.profile') }}">
+    <label>Name:</label><br>
+    <input type="text" name="name" value="{{ customer.name }}" required><br><br>
+
+    <label>Building Number:</label><br>
+    <input type="text" name="building_number" value="{{ customer.building_number }}"><br><br>
+
+    <label>Street:</label><br>
+    <input type="text" name="street" value="{{ customer.street }}"><br><br>
+
+    <label>City:</label><br>
+    <input type="text" name="city" value="{{ customer.city }}"><br><br>
+
+    <label>State:</label><br>
+    <input type="text" name="state" value="{{ customer.state }}"><br><br>
+
+    <label>Phone Number:</label><br>
+    <input type="text" name="phone_number" value="{{ customer.phone_number }}"><br><br>
+
+    <label>Passport Number:</label><br>
+    <input type="text" name="passport_number" value="{{ customer.passport_number }}"><br><br>
+
+    <label>Passport Expiration:</label><br>
+    <input type="date" name="passport_expiration"
+           value="{{ customer.passport_expiration }}"><br><br>
+
+    <label>Passport Country:</label><br>
+    <input type="text" name="passport_country" value="{{ customer.passport_country }}"><br><br>
+
+    <label>Date of Birth:</label><br>
+    <input type="date" name="date_of_birth"
+           value="{{ customer.date_of_birth }}"><br><br>
+
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

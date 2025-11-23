@@ -94,75 +94,60 @@ def login():
         conn = get_connection()
         cur = conn.cursor(dictionary=True)
         
-        # fetch user
-        cur.execute("SELECT * FROM customer WHERE email = %s;", (email,))
-        user = cur.fetchone()
-        
-        if user is None:
-            # check if agent
+        try:
+            # customer
+            cur.execute("SELECT * FROM customer WHERE email = %s;", (email,))
+            user = cur.fetchone()
+            
+            if user is not None:
+                if not bcrypt.check_password_hash(user["password"], password):
+                    flash("Invalid email or password.")
+                    return redirect(url_for("auth.login"))
+                
+                session.clear()
+                session["user_email"] = user["email"]
+                session["user_name"] = user["name"]
+                session["user_role"] = "customer"
+
+                flash("Login successful.")
+                return redirect(url_for("customer.dashboard"))
+
+            # agent
             cur.execute("SELECT * FROM booking_agent WHERE email = %s;", (email,))
             user = cur.fetchone()
             
-            if user is None:
-                # check if staff
-                cur.execute("SELECT * FROM airline_staff WHERE username = %s;", (email,))
-                user = cur.fetchone()
-                
-                if user is None or not bcrypt.check_password_hash(user["password"], password):
-                    flash("Invalid username or password.")
-                    cur.close()
-                    conn.close()
+            if user is not None:
+                if not bcrypt.check_password_hash(user["password"], password):
+                    flash("Invalid email or password.")
                     return redirect(url_for("auth.login"))
-                else:
-                    # set session for staff
-                    session.clear()
-                    session["user_id"] = user["username"]
-                    session["user_name"] = user["name"]
-                    session["user_role"] = user.get("role") or "staff"
-                    
-                    cur.close()
-                    conn.close()
-                    
-                    flash("Login successful.")
-                    return redirect(url_for("staff.dashboard"))
                 
-            elif not bcrypt.check_password_hash(user["password"], password):
-                flash("Invalid username or password.")
-                cur.close()
-                conn.close()
-                return redirect(url_for("auth.login"))
-            
-            else:
-                # set session for agent
                 session.clear()
-                session["user_email"] = user["email"]  # email is PK
+                session["user_email"] = user["email"]
+                session["user_name"] = user["email"]
                 session["user_role"] = "agent"
-                
-                cur.close()
-                conn.close()
-                
+
                 flash("Login successful.")
                 return redirect(url_for("agent.dashboard"))
             
-        elif not bcrypt.check_password_hash(user["password"], password):
-            flash("Invalid email or password.")
+            # staff
+            cur.execute("SELECT * FROM airline_staff WHERE username = %s;", (email,))
+            user = cur.fetchone()
+            
+            if user is not None:
+                if not bcrypt.check_password_hash(user["password"], password):
+                    flash("Invalid username or password.")
+                    return redirect(url_for("auth.login"))
+                
+                session.clear()
+                session["user_id"] = user["username"]
+                session["airline_name"] = user["airline_name"]
+                session["user_role"] = user["role"]
+                flash("Login successful.")
+                return redirect(url_for("staff.dashboard"))
+            
+        finally:
             cur.close()
             conn.close()
-            return redirect(url_for("auth.login"))
-        
-        else:
-            # set session for customer
-            session.clear()
-            session["user_email"] = user["email"]  # email is PK
-            session["user_name"] = user["name"]
-            session["user_role"] = "customer"
-            
-            cur.close()
-            conn.close()
-            
-            flash("Login successful.")
-            return redirect(url_for("customer.dashboard"))
-        
     
     # GET request: show login form
     return render_template("login.html")

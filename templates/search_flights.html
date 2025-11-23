@@ -4,30 +4,58 @@
 <h2>Search Results</h2>
 
 {% if flights and flights|length > 0 %}
-    <table border="1">
-        <tr>
-            <th>Airline</th>
-            <th>Flight #</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Departure</th>
-            <th>Arrival</th>
-        </tr>
-
-        {% for f in flights %}
-        <tr>
-            <td>{{ f.airline_name }}</td>
-            <td>{{ f.flight_num }}</td>
-            <td>{{ f.origin_airport_name }} ({{ f.origin_city }})</td>
-            <td>{{ f.dest_airport_name }} ({{ f.dest_city }})</td>
-            <td>{{ f.departure_time }}</td>
-            <td>{{ f.arrival_time }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
+<table border="1">
+  <tr>
+    <th>Airline</th>
+    <th>Flight #</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Departure</th>
+    <th>Arrival</th>
+    <th>Base Price</th>
+    <th>Action</th>
+  </tr>
+  {% for f in flights %}
+  <tr>
+    <td>{{ f.airline_name }}</td>
+    <td>{{ f.flight_num }}</td>
+    <td>{{ f.departure_airport }}</td>
+    <td>{{ f.arrival_airport }}</td>
+    <td>{{ f.departure_time }}</td>
+    <td>{{ f.arrival_time }}</td>
+    <td>{{ f.base_price }}</td>
+    <td>
+      {% if session.get('user_role') == 'customer' %}
+      <form method="post" action="{{ url_for('customer.purchase') }}">
+        <!-- type="hidden": send info but user cant see-->
+        <input type="hidden" name="airline_name" value="{{ f.airline_name }}">
+        <input type="hidden" name="flight_num" value="{{ f.flight_num }}">
+        <input type="hidden" name="airplane_id" value="{{ f.airplane_id }}">
+        <!-- keep the search filters -->
+        <input type="hidden" name="origin" value="{{ origin }}">
+        <input type="hidden" name="destination" value="{{ destination }}">
+        <input type="hidden" name="date" value="{{ date }}">
+        <label>Class:</label>
+        <select name="seat_class_id">
+          <option value="1">Economy</option>
+          <option value="2">Business</option>
+          <option value="3">First</option>
+        </select>
+        <button type="submit">Purchase</button>
+        <!-- will send airline_name, flight_num, airplane_id, seat_class_id after submission -->
+      </form>
+      {% elif session.get('user_role') == 'agent' and is_agent %}
+      <form method="post" action="{{ url_for('agent.purchase') }}">
+        <input type="email" name="customer_email" placeholder="customer email" required>
+      {% else %}
+        <span>Login as customer to purchase</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% else %}
-    <p>No flights found.</p>
+<p>No flights found.</p>
 {% endif %}
 
 {% endblock %}
