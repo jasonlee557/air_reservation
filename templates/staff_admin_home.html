@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Admin Panel ({{ airline_name }})</h2>
+
+<p>Welcome,
+   {% if session.get('firstname') %}{{ session['firstname'] }}{% endif %}
+   {% if session.get('lastname') %} {{ session['lastname'] }}{% endif %}
+   — you are logged in as <strong>Admin</strong>.
+</p>
+
+<hr>
+
+<h3>Add New Airport</h3>
+<form method="post" action="{{ url_for('staff.admin_home') }}">
+    <input type="hidden" name="form_type" value="airport">
+
+    <label>Airport Name:</label>
+    <input type="text" name="airport_name" required>
+
+    <label>City:</label>
+    <input type="text" name="airport_city" required>
+
+    <button type="submit">Add Airport</button>
+</form>
+
+<hr>
+
+<h3>Add New Airplane (for {{ airline_name }})</h3>
+<form method="post" action="{{ url_for('staff.admin_home') }}">
+    <input type="hidden" name="form_type" value="airplane">
+
+    <label>Airplane ID:</label>
+    <input type="text" name="airplane_id" required>
+
+    {% if seat_col_present %}
+    <label>Seat Capacity:</label>
+    <input type="number" name="seat_capacity" min="1" required>
+    {% else %}
+    <p><em>Seat capacity column not found in schema; plane will be added without a seat count.</em></p>
+    {% endif %}
+
+    <button type="submit">Add Airplane</button>
+</form>
+
+<hr>
+
+<h3>Associate Booking Agent with {{ airline_name }}</h3>
+<form method="post" action="{{ url_for('staff.admin_home') }}">
+    <input type="hidden" name="form_type" value="agent">
+
+    <label>Agent Email:</label>
+    <input type="email" name="agent_email" required>
+
+    <button type="submit">Associate Agent</button>
+</form>
+
+{% if agents and agents|length > 0 %}
+    <p>Currently associated agents:</p>
+    <ul>
+        {% for a in agents %}
+        <li>{{ a.agent_email }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<hr>
+
+<h3>Create New Flight</h3>
+<form method="post" action="{{ url_for('staff.admin_home') }}">
+    <input type="hidden" name="form_type" value="flight">
+
+    <label>Flight #:</label>
+    <input type="text" name="flight_num" required><br><br>
+
+    <label>Departure Airport:</label>
+    <select name="departure_airport" required>
+        {% for a in airports %}
+        <option value="{{ a.airport_name }}">{{ a.airport_name }} ({{ a.airport_city }})</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Arrival Airport:</label>
+    <select name="arrival_airport" required>
+        {% for a in airports %}
+        <option value="{{ a.airport_name }}">{{ a.airport_name }} ({{ a.airport_city }})</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Departure Time:</label>
+    <input type="datetime-local" name="departure_time" required><br><br>
+
+    <label>Arrival Time:</label>
+    <input type="datetime-local" name="arrival_time" required><br><br>
+
+    <label>Base Price:</label>
+    <input type="number" name="base_price" min="0" step="1" required><br><br>
+
+    <label>Airplane:</label>
+    <select name="airplane_id_for_flight" required>
+        {% for p in airplanes %}
+        <option value="{{ p.airplane_id }}">
+            {{ p.airplane_id }}{% if seat_col_present %} ({{ p.seat_capacity }} seats){% endif %}
+        </option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Status:</label>
+    <select name="status">
+        <option value="upcoming">upcoming</option>
+        <option value="on-time">on-time</option>
+        <option value="delayed">delayed</option>
+        <option value="cancelled">cancelled</option>
+    </select><br><br>
+
+    <button type="submit">Create Flight</button>
+</form>
+
+<hr>
+
+<h3>Existing Airplanes for {{ airline_name }}</h3>
+{% if airplanes %}
+<table border="1">
+    <tr><th>ID</th>{% if seat_col_present %}<th>Seat Capacity</th>{% endif %}</tr>
+    {% for p in airplanes %}
+    <tr>
+        <td>{{ p.airplane_id }}</td>
+        {% if seat_col_present %}<td>{{ p.seat_capacity }}</td>{% endif %}
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No airplanes for this airline yet.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Operator Panel ({{ airline_name }})</h2>
+
+<p>Welcome,
+   {% if session.get('firstname') %}{{ session['firstname'] }}{% endif %}
+   {% if session.get('lastname') %} {{ session['lastname'] }}{% endif %}
+   — you are logged in as <strong>Operator</strong>.
+</p>
+
+<hr>
+
+<h3>Filter Flights</h3>
+<form method="get" action="{{ url_for('staff.operator_home') }}">
+    <label>Departure date from:</label>
+    <input type="date" name="date_from" value="{{ date_from }}">
+    <label>to:</label>
+    <input type="date" name="date_to" value="{{ date_to }}"><br><br>
+
+    <label>Origin airport:</label>
+    <input type="text" name="origin" value="{{ origin }}">
+
+    <label>Destination airport:</label>
+    <input type="text" name="destination" value="{{ destination }}"><br><br>
+
+    <button type="submit">Apply Filters</button>
+</form>
+
+<hr>
+
+<h3>Flights</h3>
+{% if flights and flights|length > 0 %}
+<table border="1">
+    <tr>
+        <th>Flight #</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Status</th>
+        <th>Update Status</th>
+    </tr>
+    {% for f in flights %}
+    <tr>
+        <td>{{ f.flight_num }}</td>
+        <td>{{ f.departure_airport }}</td>
+        <td>{{ f.arrival_airport }}</td>
+        <td>{{ f.departure_time }}</td>
+        <td>{{ f.arrival_time }}</td>
+        <td>{{ f.status }}</td>
+        <td>
+            <form method="post"
+                  action="{{ url_for('staff.operator_home',
+                                     date_from=date_from,
+                                     date_to=date_to,
+                                     origin=origin,
+                                     destination=destination) }}">
+                <input type="hidden" name="flight_num" value="{{ f.flight_num }}">
+                <select name="status">
+                    <option value="upcoming"  {% if f.status == 'upcoming' %}selected{% endif %}>upcoming</option>
+                    <option value="on-time"   {% if f.status == 'on-time' %}selected{% endif %}>on-time</option>
+                    <option value="delayed"   {% if f.status == 'delayed' %}selected{% endif %}>delayed</option>
+                    <option value="cancelled" {% if f.status == 'cancelled' %}selected{% endif %}>cancelled</option>
+                </select>
+                <button type="submit">Save</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No flights match the current filters.</p>
+{% endif %}
+
+{% endblock %}
