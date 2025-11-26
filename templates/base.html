@@ -8,20 +8,33 @@
 </head>
 <body>
 <nav>
-    <!-- navigation bar, go to customer, index() -->
-    <a href="{{ url_for('customer.index') }}">Home</a>
 
     {% if session.get('user_role') %}
         <!-- <span> Hello {{ session.get('user_name') }} </span> -->
         {% if session.get('user_role') == 'customer' %}
+            <a href="{{ url_for('customer.index') }}">Book Flights</a>
             <a href="{{ url_for('customer.dashboard') }}">My Flights</a>
             <a href="{{ url_for('customer.spending') }}">My Spending</a>
             <a href="{{ url_for('customer.profile') }}">My Profile</a>
         {% endif %}
         {% if session.get('user_role') == 'agent' %}
+            <a href="{{ url_for('customer.index') }}">Book Flights</a>
             <a href="{{ url_for('agent.dashboard') }}">Flights Sold</a>
+            <a href="{{ url_for('agent.analytics') }}">Analytics</a>
         {% endif %}
         <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% if session.get('user_role') == 'admin' or session.get('user_role') == 'operator' %}
+            <a href="{{ url_for('staff.dashboard') }}">Staff Dashboard</a>
+            <a href="{{ url_for('staff.passengers') }}">Passenger List</a>
+            <a href="{{ url_for('staff.customer_flights') }}">Customer Flights</a>
+            <a href="{{ url_for('staff.analytics') }}">Analytics</a>
+            {% if session.get('user_role') == 'admin' %}
+                <a href="{{ url_for('staff.admin_home') }}">Admin</a>
+            {% endif %}
+            {% if session.get('user_role') == 'operator' %}
+                <a href="{{ url_for('staff.operator_home') }}">Operator</a>
+            {% endif %}
+        {% endif %}
     {% else %}
         <a href="{{ url_for('auth.login') }}">Login</a>
         <a href="{{ url_for('auth.register') }}">Register</a>

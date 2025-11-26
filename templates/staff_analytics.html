@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Analytics for {{ airline_name }}</h2>
+
+<hr>
+<h3>Top Booking Agents (Last Month)</h3>
+{% if top_agents_month %}
+<table border="1">
+    <tr>
+        <th>Agent</th>
+        <th>Tickets Sold</th>
+        <th>Commission</th>
+    </tr>
+    {% for a in top_agents_month %}
+    <tr>
+        <td>{{ a.agent }}</td>
+        <td>{{ a.tickets_sold }}</td>
+        <td>{{ a.commission }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No agent bookings in the last month.</p>
+{% endif %}
+
+<hr>
+<h3>Top Booking Agents (Last Year)</h3>
+{% if top_agents_year %}
+<table border="1">
+    <tr>
+        <th>Agent</th>
+        <th>Tickets Sold</th>
+        <th>Commission</th>
+    </tr>
+    {% for a in top_agents_year %}
+    <tr>
+        <td>{{ a.agent }}</td>
+        <td>{{ a.tickets_sold }}</td>
+        <td>{{ a.commission }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No agent bookings in the last year.</p>
+{% endif %}
+
+<hr>
+<h3>Most Frequent Customer (Last Year)</h3>
+{% if frequent_customer %}
+<p>{{ frequent_customer.customer }} — {{ frequent_customer.flights_taken }} flights</p>
+{% else %}
+<p>No frequent customers found.</p>
+{% endif %}
+
+<hr>
+<h3>Tickets Sold Per Month (Last 12 Months)</h3>
+<table border="1">
+    <tr><th>Month</th><th>Tickets</th></tr>
+    {% for m in tickets_per_month %}
+    <tr><td>{{ m.month }}</td><td>{{ m.tickets_sold }}</td></tr>
+    {% endfor %}
+</table>
+
+<hr>
+<h3>Delay vs. On-time</h3>
+<ul>
+    <li>Delayed: {{ delay_stats.delayed_count }}</li>
+    <li>On-time: {{ delay_stats.ontime_count }}</li>
+    <li>Other: {{ delay_stats.other_count }}</li>
+</ul>
+
+<hr>
+<h3>Top Destinations (Last 3 Months)</h3>
+<table border="1">
+    <tr><th>City</th><th>Flights</th></tr>
+    {% for d in top_dest_3m %}
+    <tr><td>{{ d.city }}</td><td>{{ d.flights }}</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Top Destinations (Last Year)</h3>
+<table border="1">
+    <tr><th>City</th><th>Flights</th></tr>
+    {% for d in top_dest_1y %}
+    <tr><td>{{ d.city }}</td><td>{{ d.flights }}</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

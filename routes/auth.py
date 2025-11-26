@@ -142,6 +142,8 @@ def login():
                 session["user_id"] = user["username"]
                 session["airline_name"] = user["airline_name"]
                 session["user_role"] = user["role"]
+                session["firstname"] = user["first_name"]
+                session["lastname"] = user["last_name"]
                 flash("Login successful.")
                 return redirect(url_for("staff.dashboard"))
             

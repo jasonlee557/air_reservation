@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Airline Staff Dashboard</h2>
+
+<p>Hello {{ first_name or session.get('firstname') }} {{ last_name or session.get('lastname') }}</p>
+<p>Airline: <strong>{{ airline_name }}</strong></p>
+
+<hr>
+
+<h3>Filter Flights</h3>
+<form method="get" action="{{ url_for('staff.dashboard') }}">
+    <label>Departure date from:</label>
+    <input type="date" name="date_from" value="{{ date_from }}">
+    <label>to:</label>
+    <input type="date" name="date_to" value="{{ date_to }}"><br><br>
+
+    <label>Origin airport:</label>
+    <input type="text" name="origin" value="{{ origin }}">
+
+    <label>Destination airport:</label>
+    <input type="text" name="destination" value="{{ destination }}"><br><br>
+
+    <button type="submit">Apply Filters</button>
+</form>
+
+<hr>
+
+<h3>Flights</h3>
+{% if flights and flights|length > 0 %}
+<table border="1">
+    <tr>
+        <th>Flight #</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Status</th>
+    </tr>
+    {% for f in flights %}
+    <tr>
+        <td>{{ f.flight_num }}</td>
+        <td>{{ f.departure_airport }}</td>
+        <td>{{ f.arrival_airport }}</td>
+        <td>{{ f.departure_time }}</td>
+        <td>{{ f.arrival_time }}</td>
+        <td>{{ f.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No flights match the current filters.</p>
+{% endif %}
+
+{% endblock %}
