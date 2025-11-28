@@ -120,7 +120,7 @@
 
 <h3>Existing Airplanes for {{ airline_name }}</h3>
 {% if airplanes %}
-<table border="1">
+<table class="book-table" border="1">
     <tr><th>ID</th>{% if seat_col_present %}<th>Seat Capacity</th>{% endif %}</tr>
     {% for p in airplanes %}
     <tr>
