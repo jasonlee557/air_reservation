@@ -1,7 +1,7 @@
 /* 2025/11/25 居中*/
 /* 2025/11/26 导航中 login out 最右边*/
 
-/* main.css — 让主要文字居中显示 */
+/* main.css — Middle */
 body {
     font-family: "Helvetica Neue", Arial, sans-serif;
     margin: 0;
@@ -17,6 +17,7 @@ body {
     text-align: center;
 }
 
+/* 20251129 HOME left */
 .navbar {
     display: flex;
     align-items: center;
@@ -63,6 +64,7 @@ body {
     color: #2a72e5;
     text-decoration: none;
 }
+
 
 /* Flash 提示 */
 .flash {
@@ -133,6 +135,7 @@ canvas {
 .book-table tr:nth-child(odd) {
     background: #84b8ea;
 }
+
 
 /* 20251128 staff analytics Delay vs. On-time */
 .delay-cards {
@@ -267,6 +270,35 @@ canvas {
     outline: none;
 }
 
+.air-filter-item select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    background: #fafafa;
+
+    /* 美化下拉箭头 */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'><path fill='%23333' d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    cursor: pointer;
+
+    transition: all 0.2s;
+}
+
+.air-filter-item select:focus {
+    border-color: #0078ff;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0,120,255,0.3);
+    outline: none;
+}
+
+
 .air-btn-search {
     padding: 10px 22px;
     height: 42px;
@@ -290,6 +322,12 @@ canvas {
     background: #004faa;
 }
 
+.air-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+
 /* 手机屏幕友好 */
 @media (max-width: 768px) {
     .air-filter-bar {
@@ -305,6 +343,12 @@ canvas {
     .air-btn-search {
         width: 100%;
     }
+}
+
+.schema-warning {
+    margin-top: 6px;
+    color: #a00;
+    font-size: 0.9rem;
 }
 
 
