@@ -81,9 +81,18 @@ def register():
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    # preserve search filters if the user came from the search results page
+    search_origin = request.args.get("origin", "").strip()
+    search_destination = request.args.get("destination", "").strip()
+    search_date = request.args.get("date", "").strip()
+
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "").strip()
+        # grab any forwarded search filters from hidden form fields
+        search_origin = request.form.get("origin", search_origin).strip()
+        search_destination = request.form.get("destination", search_destination).strip()
+        search_date = request.form.get("date", search_date).strip()
         
         # validation
         if email == "" or password == "":
@@ -110,6 +119,11 @@ def login():
                 session["user_role"] = "customer"
 
                 flash("Login successful.")
+                if search_date:
+                    return redirect(url_for("search_flights.search_flights",
+                                            origin=search_origin,
+                                            destination=search_destination,
+                                            date=search_date))
                 return redirect(url_for("customer.dashboard"))
 
             # agent
@@ -127,6 +141,11 @@ def login():
                 session["user_role"] = "agent"
 
                 flash("Login successful.")
+                if search_date:
+                    return redirect(url_for("search_flights.search_flights",
+                                            origin=search_origin,
+                                            destination=search_destination,
+                                            date=search_date))
                 return redirect(url_for("agent.dashboard"))
             
             # staff
@@ -152,7 +171,12 @@ def login():
             conn.close()
     
     # GET request: show login form
-    return render_template("login.html")
+    return render_template(
+        "login.html",
+        origin=search_origin,
+        destination=search_destination,
+        date=search_date,
+    )
 
 
 @auth_bp.route("/logout")

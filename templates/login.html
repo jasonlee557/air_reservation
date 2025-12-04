@@ -14,6 +14,16 @@
         <input type="password" name="password" required>
     </div>
 
+    {% if date %}
+      <input type="hidden" name="date" value="{{ date }}">
+    {% endif %}
+    {% if origin %}
+      <input type="hidden" name="origin" value="{{ origin }}">
+    {% endif %}
+    {% if destination %}
+      <input type="hidden" name="destination" value="{{ destination }}">
+    {% endif %}
+
     <button type="submit" class="login-btn">Login</button>
 </form>
 {% endblock %}

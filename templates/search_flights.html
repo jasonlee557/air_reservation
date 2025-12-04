@@ -75,6 +75,7 @@
 
       {% else %}
         <span>Login as customer or agent to purchase</span>
+        <a class="air-btn air-btn-login" href="{{ url_for('auth.login', origin=origin, destination=destination, date=date) }}">Login</a>
       {% endif %}
     </td>
   </tr>

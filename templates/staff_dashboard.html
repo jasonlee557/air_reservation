@@ -3,7 +3,7 @@
 {% block content %}
 <h2>Airline Staff Dashboard</h2>
 
-<p>Hello {{ first_name or session.get('firstname') }} {{ last_name or session.get('lastname') }}</p>
+<p>Logged in as: {{ first_name or session.get('firstname') }} {{ last_name or session.get('lastname') }}</p>
 <p>Airline: <strong>{{ airline_name }}</strong></p>
 
 <hr>
