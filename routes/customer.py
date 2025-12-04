@@ -107,7 +107,7 @@ def purchase():
     airplane_id   = request.form.get("airplane_id", "").strip()
     seat_class_id = request.form.get("seat_class_id", "").strip()
 
-    # Search filters (so we can return to the same results page)
+    # Search filters
     origin      = request.form.get("origin", "").strip()
     destination = request.form.get("destination", "").strip()
     date        = request.form.get("date", "").strip()

@@ -9,21 +9,22 @@
 <form class="air-filter-bar search-flights" method="GET" action="{{ url_for('search_flights.search_flights') }}">
     <div class="air-filter-item">
         <label>Origin</label>
-        <input type="text" name="origin" placeholder="New York / JFK">
+        <input type="text" name="origin" placeholder="New York / JFK" value="{{ session.get('last_search_origin','') }}">
     </div>
 
     <div class="air-filter-item">
         <label>Destination</label>
-        <input type="text" name="destination" placeholder="Shanghai / PVG">
+        <input type="text" name="destination" placeholder="Shanghai / PVG" value="{{ session.get('last_search_destination','') }}">
     </div>
 
     <div class="air-filter-item">
         <label>Date</label>
-        <input type="date" name="date" required>
+        <input type="date" name="date" value="{{ session.get('last_search_date','') }}" required>
     </div>
 
     <button type="submit" class="air-btn-search">Search</button>
 </form>
+
 
 <hr>
 
