@@ -86,7 +86,7 @@
 
 {% if agents and agents|length > 0 %}
     <p>Currently associated agents:</p>
-    <ul>
+    <ul style="list-style: none; padding-left: 0;">
         {% for a in agents %}
         <li>{{ a.agent_email }}</li>
         {% endfor %}
